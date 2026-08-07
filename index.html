@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maroc Brunch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #B3241C;
+  --red-deep: #6E1414;
+  --red-darkest: #2A0707;
+  --white: #FFFFFF;
+  --off-white: #FDF7F2;
+  --black: #0E0F0C;
+  --font-display: 'Anton', sans-serif;
+  --font-serif: 'Fraunces', serif;
+  --font-body: 'Work Sans', sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--off-white);
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------- REVEAL AU SCROLL ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(.2,.7,.3,1), transform 0.7s cubic-bezier(.2,.7,.3,1);
+}
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+.reveal-1 { transition-delay: 0.05s; }
+.reveal-2 { transition-delay: 0.15s; }
+.reveal-3 { transition-delay: 0.25s; }
+.reveal-4 { transition-delay: 0.35s; }
+
+/* ---------- HERO ---------- */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 32px 20px;
+  background: radial-gradient(120% 90% at 50% 0%, var(--red) 0%, var(--red-deep) 45%, var(--red-darkest) 100%);
+}
+
+.hero-glow {
+  position: absolute;
+  top: -10%; left: 50%;
+  transform: translateX(-50%);
+  width: 640px; height: 640px; max-width: 140vw;
+  background: radial-gradient(circle, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0) 65%);
+  filter: blur(10px);
+  animation: pulseGlow 5s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+}
+
+/* Orbes flottants */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.35), rgba(255,255,255,0) 70%);
+  filter: blur(2px);
+  pointer-events: none;
+}
+.orb1 { width: 140px; height: 140px; top: 8%; left: 8%; animation: floatOrb 9s ease-in-out infinite; }
+.orb2 { width: 90px; height: 90px; top: 65%; right: 10%; animation: floatOrb 11s ease-in-out infinite reverse; }
+.orb3 { width: 60px; height: 60px; top: 30%; right: 20%; animation: floatOrb 7s ease-in-out infinite; }
+
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(18px,-24px) scale(1.08); }
+}
+
+.stars-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+
+.sparkle-star {
+  position: absolute; bottom: -20px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  box-shadow: 0 0 8px 2px rgba(255,255,255,0.85), 0 0 16px 4px rgba(255,255,255,0.35);
+  animation: moveAndFade linear forwards;
+}
+
+@keyframes moveAndFade {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateY(-50%) scale(1.2); }
+  100% { transform: translateY(-105%) scale(0.3); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) { .sparkle-star, .orb { display: none; } }
+
+.hero-content { position: relative; z-index: 1; max-width: 640px; text-align: center; color: var(--white); }
+
+.eyebrow {
+  font-size: 0.8rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.85); margin: 0 0 14px; font-weight: 600;
+  animation: fadeDown 0.8s ease both;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(2.1rem, 8vw, 3.4rem); line-height: 1.08;
+  margin: 0 0 10px; text-transform: uppercase;
+  animation: fadeUpBig 0.9s cubic-bezier(.2,.8,.3,1) 0.1s both;
+}
+
+@keyframes fadeUpBig {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.hero-sub {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: clamp(1.1rem, 3.4vw, 1.35rem);
+  margin: 0 0 8px; color: var(--white);
+  animation: fadeUpBig 0.9s cubic-bezier(.2,.8,.3,1) 0.25s both;
+}
+
+.hero-place {
+  font-size: 0.95rem; opacity: 0.85; margin: 0 0 32px;
+  animation: fadeUpBig 0.9s cubic-bezier(.2,.8,.3,1) 0.35s both;
+}
+
+.countdown {
+  display: flex; justify-content: center; gap: 10px; margin-bottom: 8px;
+  animation: fadeUpBig 0.9s cubic-bezier(.2,.8,.3,1) 0.45s both;
+}
+
+.countdown-unit {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 10px; padding: 10px 14px; min-width: 62px;
+  transition: transform 0.15s ease;
+}
+
+.countdown-num {
+  display: block; font-family: var(--font-display); font-size: 1.7rem; color: var(--white); line-height: 1;
+}
+
+.countdown-num.tick { animation: tickPulse 0.4s ease; }
+@keyframes tickPulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.25); color: #fff; }
+  100% { transform: scale(1); }
+}
+
+.countdown-label { display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; opacity: 0.8; }
+.countdown-caption { font-size: 0.85rem; opacity: 0.85; margin: 6px 0 30px; }
+
+.btn-primary {
+  display: inline-block; background: var(--white);
+  color: var(--red-deep); font-weight: 700; text-decoration: none;
+  padding: 15px 34px; border-radius: 100px; border: none;
+  font-size: 1rem; cursor: pointer; font-family: var(--font-body);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+  animation: fadeUpBig 0.9s cubic-bezier(.2,.8,.3,1) 0.55s both, pulseBtn 2.6s ease-in-out 2s infinite;
+}
+
+@keyframes pulseBtn {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 0 0 rgba(255,255,255,0.5); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 0 10px rgba(255,255,255,0); }
+}
+
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.28); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; animation: none; }
+
+.contact-bar {
+  position: relative; z-index: 1;
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 22px;
+  animation: fadeUpBig 0.9s cubic-bezier(.2,.8,.3,1) 0.65s both;
+}
+
+.contact-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: var(--white); text-decoration: none;
+  padding: 9px 18px; border-radius: 100px; font-size: 0.85rem; font-weight: 500;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.contact-pill:hover { background: rgba(255,255,255,0.18); transform: translateY(-1px); }
+
+.whatsapp-float {
+  position: fixed; bottom: 22px; right: 20px; z-index: 50;
+  display: flex; align-items: center; gap: 8px;
+  background: #25D366; color: #fff; text-decoration: none;
+  padding: 13px 18px; border-radius: 100px; font-size: 0.85rem; font-weight: 600;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+  transition: transform 0.15s ease;
+  animation: floatBtn 3s ease-in-out infinite;
+}
+@keyframes floatBtn { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.whatsapp-float:hover { transform: translateY(-2px) scale(1.05); }
+.whatsapp-float svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+/* Scroll cue */
+.scroll-cue {
+  position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.75); font-size: 1.4rem;
+  animation: bounceCue 1.8s ease-in-out infinite;
+  z-index: 1;
+}
+@keyframes bounceCue { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+/* ---------- VERSETS ---------- */
+.verses {
+  background: var(--off-white);
+  padding: 56px 24px;
+  text-align: center;
+}
+
+.verses-inner { max-width: 560px; margin: 0 auto; min-height: 96px; }
+
+.verse-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.05rem, 3.6vw, 1.3rem);
+  color: var(--red-deep);
+  line-height: 1.55;
+  margin: 0 0 12px;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.verse-ref {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  font-weight: 700;
+  margin: 0;
+  transition: opacity 0.5s ease;
+}
+
+.verse-text.fade, .verse-ref.fade { opacity: 0; transform: translateY(6px); }
+
+/* ---------- VALEURS ---------- */
+.values {
+  position: relative;
+  overflow: hidden;
+  background: var(--red-deep);
+  padding: 44px 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  text-align: center;
+}
+@media (min-width: 640px) { .values { grid-template-columns: repeat(4, 1fr); } }
+
+.value-item { position: relative; z-index: 1; }
+.value-icon {
+  font-size: 1.9rem; margin-bottom: 8px;
+  display: inline-block;
+  animation: bobIcon 3.4s ease-in-out infinite;
+}
+.value-item:nth-child(2) .value-icon { animation-delay: 0.3s; }
+.value-item:nth-child(3) .value-icon { animation-delay: 0.6s; }
+.value-item:nth-child(4) .value-icon { animation-delay: 0.9s; }
+
+@keyframes bobIcon {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(-4deg); }
+}
+
+.value-item p { color: var(--white); font-size: 0.85rem; font-weight: 600; margin: 0; }
+
+/* ---------- FORMULAIRE ---------- */
+.registration { background: var(--off-white); padding: 64px 20px 80px; }
+
+.section-eyebrow {
+  text-align: center; text-transform: uppercase; letter-spacing: 0.14em;
+  font-size: 0.78rem; color: var(--red); font-weight: 700; margin: 0 0 8px;
+}
+.section-title {
+  text-align: center; font-family: var(--font-display); font-weight: 400;
+  text-transform: uppercase; font-size: clamp(1.5rem, 5vw, 2.1rem);
+  color: var(--red-deep); margin: 0 0 12px;
+}
+.registration-sub { text-align: center; margin: 0 0 34px; color: #6b4a4a; }
+
+.reg-form {
+  max-width: 480px; margin: 0 auto; background: #fff;
+  border-radius: 18px; padding: 30px 24px;
+  box-shadow: 0 12px 30px rgba(110,20,20,0.08);
+  border: 1px solid rgba(110,20,20,0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--red-deep); margin-bottom: 6px; }
+.field .optional { font-weight: 400; color: #8a8a80; }
+.field input {
+  width: 100%; padding: 12px 14px; border-radius: 10px;
+  border: 1.5px solid #e8d9d9; font-size: 1rem;
+  font-family: var(--font-body); background: var(--off-white);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.field input:focus-visible {
+  outline: none; border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(179,36,28,0.18);
+  transform: translateY(-1px);
+}
+
+.form-error {
+  color: var(--red); font-size: 0.85rem; margin: 0 0 14px;
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.reg-form .btn-primary { width: 100%; text-align: center; background: var(--red); color: var(--white); animation: none; }
+.reg-form .btn-primary:hover { background: var(--red-deep); }
+
+.step2-intro { text-align: center; margin-bottom: 22px; }
+.step2-check { color: var(--red-deep); font-weight: 700; margin: 0 0 6px; }
+
+#step3 { text-align: center; }
+
+.check-circle { width: 64px; height: 64px; margin: 0 auto 14px; }
+.check-circle circle {
+  fill: none; stroke: var(--red); stroke-width: 3;
+  stroke-dasharray: 166; stroke-dashoffset: 166;
+  animation: drawCircle 0.6s ease forwards;
+}
+.check-circle path {
+  fill: none; stroke: var(--red); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 48; stroke-dashoffset: 48;
+  animation: drawCheck 0.4s ease 0.5s forwards;
+}
+@keyframes drawCircle { to { stroke-dashoffset: 0; } }
+@keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+.step3-title {
+  font-family: var(--font-display); font-size: 1.3rem; color: var(--red-deep);
+  text-transform: uppercase; margin: 0 0 8px;
+}
+.step3-text { color: #6b4a4a; margin: 0; }
+
+/* ---------- FOOTER ---------- */
+.site-footer {
+  position: relative; overflow: hidden;
+  background: var(--red-darkest); color: var(--white);
+  text-align: center; padding: 40px 20px 34px;
+}
+.footer-content { position: relative; z-index: 1; }
+.footer-slogan { font-family: var(--font-display); text-transform: uppercase; font-size: 1.2rem; margin: 0 0 14px; }
+.footer-contact { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0 0 16px; }
+.footer-org { font-size: 0.8rem; opacity: 0.7; margin: 0; }
+</style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-glow"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    <div class="stars-layer" id="hero-stars" aria-hidden="true"></div>
+    <div class="hero-content">
+      <p class="eyebrow">Refuge pour la Restauration</p>
+      <h1 class="hero-title">Brunch Spécial Maroc</h1>
+      <p class="hero-sub">« Un moment de témoignage et de communion fraternelle. »</p>
+      <p class="hero-place">📍 Tanger — Villa Haris</p>
+
+      <div class="countdown" id="countdown" aria-live="polite">
+        <div class="countdown-unit"><span class="countdown-num" id="cd-days">--</span><span class="countdown-label">jours</span></div>
+        <div class="countdown-unit"><span class="countdown-num" id="cd-hours">--</span><span class="countdown-label">heures</span></div>
+        <div class="countdown-unit"><span class="countdown-num" id="cd-min">--</span><span class="countdown-label">min</span></div>
+        <div class="countdown-unit"><span class="countdown-num" id="cd-sec">--</span><span class="countdown-label">sec</span></div>
+      </div>
+      <p class="countdown-caption">samedi 19 septembre à 10 heures</p>
+
+      <a href="#inscription" class="btn-primary">Je m'inscris</a>
+
+      <div class="contact-bar">
+        <a class="contact-pill" href="tel:+212632479966">📞 +212 632-479966</a>
+        <a class="contact-pill" href="https://whatsapp.com/channel/0029VbCM99VCRs1jfVltNJ44" target="_blank" rel="noopener">💬 Rejoindre le canal WhatsApp</a>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">↓</div>
+  </header>
+
+  <!-- VERSETS -->
+  <section class="verses reveal">
+    <div class="verses-inner">
+      <p class="verse-text" id="verse-text"></p>
+      <p class="verse-ref" id="verse-ref"></p>
+    </div>
+  </section>
+
+  <!-- VALEURS -->
+  <section class="values">
+    <div class="value-item reveal reveal-1"><div class="value-icon">🙏</div><p>Action de grâce</p></div>
+    <div class="value-item reveal reveal-2"><div class="value-icon">🍴</div><p>Brunch gourmand</p></div>
+    <div class="value-item reveal reveal-3"><div class="value-icon">🧎</div><p>Prière et adoration</p></div>
+    <div class="value-item reveal reveal-4"><div class="value-icon">🙇‍♂️</div><p>Témoignages inspirants</p></div>
+  </section>
+
+  <!-- FORMULAIRE -->
+  <section class="registration" id="inscription">
+    <p class="section-eyebrow reveal">L'enregistrement est obligatoire pour participer au programme.</p>
+    <h2 class="section-title reveal">Réserve ta place</h2>
+    <p class="registration-sub reveal">Holy Brunch, parler de sa foi autrement.</p>
+
+    <form id="form-step1" class="reg-form reveal">
+      <div class="field"><label for="nom">Nom *</label><input type="text" id="nom" name="nom" required></div>
+      <div class="field"><label for="prenoms">Prénoms *</label><input type="text" id="prenoms" name="prenoms" required></div>
+      <div class="field"><label for="religion">Religion *</label><input type="text" id="religion" name="religion" required></div>
+      <div class="field"><label for="ville">Ville *</label><input type="text" id="ville" name="ville" required></div>
+      <div class="field"><label for="whatsapp">Numéro WhatsApp *</label><input type="tel" id="whatsapp" name="whatsapp" required placeholder="+212 6 12 34 56 78"></div>
+      <div class="field"><label for="comment_connu">Comment as-tu eu connaissance de cette activité ? <span class="optional">(facultatif)</span></label><input type="text" id="comment_connu" name="comment_connu"></div>
+
+      <p class="form-error" id="form-error" hidden></p>
+      <button type="submit" class="btn-primary" id="submit-btn">Confirmer mon inscription</button>
+    </form>
+
+    <form id="form-step2" class="reg-form" hidden>
+      <div class="step2-intro">
+        <p class="step2-check">✓ Inscription confirmée</p>
+        <p>Indique ton email pour recevoir ton ticket.</p>
+      </div>
+      <div class="field"><label for="email">Email *</label><input type="email" id="email" name="email" required placeholder="toi@exemple.com"></div>
+      <p class="form-error" id="form-error-2" hidden></p>
+      <button type="submit" class="btn-primary" id="submit-btn-2">Recevoir mon ticket</button>
+    </form>
+
+    <div id="step3" class="reg-form" hidden>
+      <svg class="check-circle" viewBox="0 0 60 60">
+        <circle cx="30" cy="30" r="26"/>
+        <path d="M18 31 L26 39 L42 21"/>
+      </svg>
+      <p class="step3-title">Holy Brunch !</p>
+      <p class="step3-text">Vérifie ta boîte mail (et tes spams) dans quelques instants.</p>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p class="footer-slogan">Une famille, une foi, un feu !</p>
+      <div class="footer-contact">
+        <a class="contact-pill" href="tel:+212632479966">📞 +212 632-479966</a>
+        <a class="contact-pill" href="https://whatsapp.com/channel/0029VbCM99VCRs1jfVltNJ44" target="_blank" rel="noopener">💬 Canal WhatsApp</a>
+      </div>
+      <p class="footer-org">Refuge pour la Restauration</p>
+    </div>
+  </footer>
+
+  <a class="whatsapp-float" href="https://whatsapp.com/channel/0029VbCM99VCRs1jfVltNJ44" target="_blank" rel="noopener" aria-label="Rejoindre le canal WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.05 2Zm5.76 14.15c-.24.68-1.4 1.3-1.93 1.38-.49.08-1.11.11-1.79-.11-.41-.13-.95-.31-1.63-.6-2.87-1.24-4.74-4.13-4.88-4.32-.14-.19-1.17-1.55-1.17-2.96s.73-2.1.99-2.39c.26-.29.56-.36.75-.36.19 0 .37 0 .53.01.17.01.4-.06.62.48.24.58.81 2 .88 2.15.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.16-.29.36-.42.49-.14.14-.28.29-.12.57.16.28.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.61-.07.16-.19.68-.79.86-1.07.18-.28.36-.23.6-.14.24.09 1.55.73 1.82.86.27.14.44.2.51.32.07.12.07.68-.17 1.35Z"/></svg>
+    Nos actualités
+  </a>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://kkwaifynckroxetvrxeg.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtrd2FpZnluY2tyb3hldHZyeGVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMTc5NTcsImV4cCI6MjEwMTY5Mzk1N30.mTz12DA5BQ2R9JRP4Bg3lnNUmjkvgJiBqgURifB_1pY";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const EVENT_DATE = new Date("2026-09-19T10:00:00+01:00");
+
+    /* ---------- DÉCOMPTE (avec petit "tick" animé au changement) ---------- */
+    let lastSec = null;
+    function updateCountdown() {
+      const now = new Date();
+      let diff = EVENT_DATE - now;
+      if (diff <= 0) {
+        ["cd-days","cd-hours","cd-min","cd-sec"].forEach(id => document.getElementById(id).textContent = "0");
+        document.querySelector(".countdown-caption").textContent = "C'est aujourd'hui !";
+        return;
+      }
+      const days = Math.floor(diff / 86400000); diff -= days * 86400000;
+      const hours = Math.floor(diff / 3600000); diff -= hours * 3600000;
+      const min = Math.floor(diff / 60000); diff -= min * 60000;
+      const sec = Math.floor(diff / 1000);
+
+      document.getElementById("cd-days").textContent = days;
+      document.getElementById("cd-hours").textContent = String(hours).padStart(2, "0");
+      document.getElementById("cd-min").textContent = String(min).padStart(2, "0");
+
+      const secEl = document.getElementById("cd-sec");
+      secEl.textContent = String(sec).padStart(2, "0");
+      if (sec !== lastSec) {
+        secEl.classList.remove("tick");
+        void secEl.offsetWidth;
+        secEl.classList.add("tick");
+        lastSec = sec;
+      }
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    /* ---------- ÉTOILES ---------- */
+    function spawnStar(container) {
+      if (!container) return;
+      const star = document.createElement("div");
+      star.className = "sparkle-star";
+      star.style.left = Math.random() * 100 + "%";
+      const size = Math.random() * 8 + 4;
+      star.style.width = size + "px";
+      star.style.height = size + "px";
+      const duration = Math.random() * 5 + 4;
+      star.style.animationDuration = duration + "s";
+      star.style.opacity = Math.random() * 0.6 + 0.3;
+      container.appendChild(star);
+      setTimeout(() => star.remove(), duration * 1000);
+    }
+    const heroStars = document.getElementById("hero-stars");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reducedMotion) setInterval(() => spawnStar(heroStars), 450);
+
+    /* ---------- REVEAL AU SCROLL ---------- */
+    const revealEls = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => io.observe(el));
+
+    /* ---------- VERSETS (défilement) ---------- */
+    const verses = [
+      { text: "Ils persévéraient dans l'enseignement des apôtres, dans la communion fraternelle, dans la fraction du pain, et dans les prières.", ref: "Actes 2:42" },
+      { text: "Voici, oh ! qu'il est agréable, qu'il est doux pour des frères de demeurer ensemble !", ref: "Psaume 133:1" },
+      { text: "Deux valent mieux qu'un... car, s'ils tombent, l'un relève son compagnon.", ref: "Ecclésiaste 4:9-10" },
+      { text: "Ils l'ont vaincu à cause du sang de l'agneau et à cause de la parole de leur témoignage.", ref: "Apocalypse 12:11" },
+      { text: "Veillons les uns sur les autres, pour nous exciter à la charité et aux bonnes œuvres, n'abandonnant pas notre assemblée.", ref: "Hébreux 10:24-25" }
+    ];
+    let verseIndex = 0;
+    const verseTextEl = document.getElementById("verse-text");
+    const verseRefEl = document.getElementById("verse-ref");
+
+    function showVerse(i) {
+      verseTextEl.textContent = verses[i].text;
+      verseRefEl.textContent = verses[i].ref;
+    }
+    showVerse(0);
+
+    setInterval(() => {
+      verseTextEl.classList.add("fade");
+      verseRefEl.classList.add("fade");
+      setTimeout(() => {
+        verseIndex = (verseIndex + 1) % verses.length;
+        showVerse(verseIndex);
+        verseTextEl.classList.remove("fade");
+        verseRefEl.classList.remove("fade");
+      }, 500);
+    }, 6000);
+
+    /* ---------- ÉTAPE 1 ---------- */
+    const formStep1 = document.getElementById("form-step1");
+    const formError = document.getElementById("form-error");
+    let currentInscriptionId = null;
+
+    formStep1.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      formError.hidden = true;
+      const btn = document.getElementById("submit-btn");
+      btn.disabled = true;
+      btn.textContent = "Envoi en cours…";
+
+      const newId = crypto.randomUUID();
+      const payload = {
+        id: newId,
+        nom: formStep1.nom.value.trim(),
+        prenoms: formStep1.prenoms.value.trim(),
+        religion: formStep1.religion.value.trim(),
+        ville: formStep1.ville.value.trim(),
+        whatsapp: formStep1.whatsapp.value.trim(),
+        comment_connu: formStep1.comment_connu.value.trim() || null
+      };
+
+      try {
+        const { error } = await sb.from("inscriptions").insert(payload);
+
+        if (error) {
+          formError.textContent = "Erreur : " + error.message;
+          formError.hidden = false;
+          btn.disabled = false;
+          btn.textContent = "Confirmer mon inscription";
+          return;
+        }
+
+        currentInscriptionId = newId;
+        formStep1.hidden = true;
+        document.getElementById("form-step2").hidden = false;
+      } catch (err) {
+        formError.textContent = "Erreur réseau : " + (err && err.message ? err.message : String(err));
+        formError.hidden = false;
+        btn.disabled = false;
+        btn.textContent = "Confirmer mon inscription";
+      }
+    });
+
+    /* ---------- ÉTAPE 2 ---------- */
+    const formStep2 = document.getElementById("form-step2");
+    const formError2 = document.getElementById("form-error-2");
+
+    formStep2.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      formError2.hidden = true;
+      const btn = document.getElementById("submit-btn-2");
+      btn.disabled = true;
+      btn.textContent = "Envoi en cours…";
+
+      try {
+        const { error } = await sb.from("inscriptions").update({ email: formStep2.email.value.trim() }).eq("id", currentInscriptionId);
+
+        if (error) {
+          formError2.textContent = "Erreur : " + error.message;
+          formError2.hidden = false;
+          btn.disabled = false;
+          btn.textContent = "Recevoir mon ticket";
+          return;
+        }
+
+        formStep2.hidden = true;
+        document.getElementById("step3").hidden = false;
+      } catch (err) {
+        formError2.textContent = "Erreur réseau : " + (err && err.message ? err.message : String(err));
+        formError2.hidden = false;
+        btn.disabled = false;
+        btn.textContent = "Recevoir mon ticket";
+      }
+    });
+  </script>
+</body>
+</html>
