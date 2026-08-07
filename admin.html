@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Inscriptions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #B3241C;
+  --red-deep: #6E1414;
+  --red-darkest: #2A0707;
+  --white: #FFFFFF;
+  --off-white: #FDF7F2;
+  --black: #0E0F0C;
+  --font-display: 'Anton', sans-serif;
+  --font-serif: 'Fraunces', serif;
+  --font-body: 'Work Sans', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  font-family: var(--font-body);
+  background: var(--off-white);
+  color: var(--black);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------- LOGIN ---------- */
+.login-wrap {
+  min-height: 100svh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: radial-gradient(120% 90% at 50% 0%, var(--red) 0%, var(--red-deep) 45%, var(--red-darkest) 100%);
+}
+
+.login-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 18px;
+  padding: 32px 26px;
+  max-width: 380px; width: 100%;
+  color: var(--white);
+  animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+.login-card h2 {
+  font-family: var(--font-serif); font-style: italic; font-weight: 500;
+  text-align: center; margin: 0 0 24px; font-size: 1.5rem;
+}
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 0.85rem; margin-bottom: 6px; opacity: 0.85; }
+.field input {
+  width: 100%; padding: 12px 14px; border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.08); color: var(--white); font-size: 1rem;
+}
+.field input::placeholder { color: rgba(255,255,255,0.5); }
+
+.btn-primary {
+  display: block; width: 100%;
+  background: var(--white); color: var(--red-deep); font-weight: 700;
+  border: none; padding: 14px; border-radius: 100px; font-size: 1rem;
+  cursor: pointer; margin-top: 8px; transition: transform 0.15s ease;
+}
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.login-error {
+  color: #ffd7d7; background: rgba(0,0,0,0.2);
+  padding: 10px 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 14px;
+}
+
+/* ---------- TOPBAR ---------- */
+.topbar {
+  background: linear-gradient(120deg, var(--red-darkest), var(--red-deep));
+  color: var(--white); padding: 20px 24px;
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.topbar-eyebrow { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; opacity: 0.75; margin: 0; }
+.topbar h1 { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: 1.4rem; margin: 2px 0 0; }
+
+.btn-logout {
+  background: transparent; border: 1px solid rgba(255,255,255,0.4); color: var(--white);
+  padding: 8px 16px; border-radius: 100px; font-size: 0.8rem; cursor: pointer; font-family: var(--font-body);
+}
+
+/* ---------- CONTENU ---------- */
+.content { max-width: 1080px; margin: 0 auto; padding: 26px 20px 70px; }
+
+.stats-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px; margin-bottom: 22px;
+}
+
+.stat-card {
+  background: var(--white); border: 1px solid rgba(110,20,20,0.1);
+  border-radius: 14px; padding: 16px 18px;
+  box-shadow: 0 6px 18px rgba(110,20,20,0.05);
+  opacity: 0; transform: translateY(10px);
+  animation: fadeUp 0.5s ease forwards;
+}
+.stat-card:nth-child(2) { animation-delay: 0.08s; }
+.stat-card:nth-child(3) { animation-delay: 0.16s; }
+.stat-card:nth-child(4) { animation-delay: 0.24s; }
+
+.stat-num { font-family: var(--font-display); font-size: 1.7rem; color: var(--red); display: block; }
+.stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--red-deep); font-weight: 600; }
+
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+
+.search-input {
+  flex: 1; min-width: 200px; padding: 10px 16px; border-radius: 100px;
+  border: 1px solid #e8d9d9; font-size: 0.9rem; font-family: var(--font-body); background: var(--white);
+}
+
+.filter-chip {
+  padding: 9px 16px; border-radius: 100px; border: 1px solid #e8d9d9;
+  background: var(--white); font-size: 0.82rem; cursor: pointer;
+  font-family: var(--font-body); color: var(--red-deep); white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.filter-chip.active { background: var(--red); color: var(--white); border-color: var(--red); }
+
+/* ---------- TABLEAU ---------- */
+.table-wrap {
+  background: var(--white); border-radius: 16px; overflow: hidden;
+  border: 1px solid rgba(110,20,20,0.1); box-shadow: 0 10px 30px rgba(110,20,20,0.06);
+  overflow-x: auto;
+}
+
+table { width: 100%; border-collapse: collapse; min-width: 760px; }
+
+thead th {
+  text-align: left; padding: 14px 16px; background: var(--off-white);
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--red-deep); font-weight: 700; cursor: pointer; user-select: none;
+  white-space: nowrap; border-bottom: 2px solid rgba(110,20,20,0.1);
+}
+thead th:hover { color: var(--red); }
+thead th .arrow { opacity: 0.4; margin-left: 4px; font-size: 0.7em; }
+thead th.sorted .arrow { opacity: 1; }
+
+tbody tr { border-bottom: 1px solid #f2e6e6; transition: background 0.1s ease; }
+tbody tr:hover { background: var(--off-white); }
+tbody tr.dup-row { background: #fff2ee; }
+tbody tr.dup-row:hover { background: #ffe6de; }
+
+td { padding: 13px 16px; font-size: 0.88rem; vertical-align: top; }
+.td-nom { font-weight: 700; color: var(--red-darkest); }
+.dup-badge {
+  display: inline-block; background: var(--red); color: var(--white);
+  font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 100px;
+  margin-left: 8px; text-transform: uppercase; letter-spacing: 0.03em; vertical-align: middle;
+}
+.td-muted { color: #999; font-size: 0.8rem; }
+.badge-sent { color: #1e7a3e; font-size: 0.78rem; font-weight: 600; }
+.badge-pending { color: #b8860b; font-size: 0.78rem; font-weight: 600; }
+
+.action-btn {
+  background: var(--off-white); border: 1px solid #e8d9d9; color: var(--red-deep);
+  padding: 6px 12px; border-radius: 100px; font-size: 0.76rem; cursor: pointer;
+  font-family: var(--font-body); white-space: nowrap;
+}
+.action-btn:hover { background: #ffe6de; }
+
+.empty-state { text-align: center; color: #999; padding: 60px 20px; }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--red-darkest); color: var(--white); padding: 12px 22px;
+  border-radius: 100px; font-size: 0.85rem; opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease; pointer-events: none; z-index: 200;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-wrap" class="login-wrap">
+    <div class="login-card">
+      <h2>Inscriptions — Tanger</h2>
+      <p class="login-error" id="login-error" hidden></p>
+      <form id="login-form">
+        <div class="field"><label for="email">Email</label><input type="email" id="email" required autocomplete="email"></div>
+        <div class="field"><label for="password">Mot de passe</label><input type="password" id="password" required autocomplete="current-password"></div>
+        <button type="submit" class="btn-primary" id="login-btn">Se connecter</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" hidden>
+    <div class="topbar">
+      <div>
+        <p class="topbar-eyebrow">Refuge pour la Restauration</p>
+        <h1>Liste des inscrits — Tanger</h1>
+      </div>
+      <button class="btn-logout" id="logout-btn">Se déconnecter</button>
+    </div>
+
+    <div class="content">
+      <div class="stats-row">
+        <div class="stat-card"><span class="stat-num" id="stat-total">--</span><span class="stat-label">Inscrits</span></div>
+        <div class="stat-card"><span class="stat-num" id="stat-sent">--</span><span class="stat-label">Tickets envoyés</span></div>
+        <div class="stat-card"><span class="stat-num" id="stat-pending">--</span><span class="stat-label">En attente</span></div>
+        <div class="stat-card"><span class="stat-num" id="stat-dup">--</span><span class="stat-label">Doublons possibles</span></div>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input" id="search-input" placeholder="Rechercher un nom, une ville, un numéro…">
+        <button class="filter-chip" id="filter-dup" data-active="false">⚠️ Doublons uniquement</button>
+        <button class="filter-chip" id="filter-pending" data-active="false">⏳ Ticket non envoyé</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-sort="nom">Nom <span class="arrow">↕</span></th>
+              <th data-sort="prenoms">Prénoms <span class="arrow">↕</span></th>
+              <th data-sort="ville">Ville <span class="arrow">↕</span></th>
+              <th data-sort="whatsapp">WhatsApp <span class="arrow">↕</span></th>
+              <th data-sort="email">Email <span class="arrow">↕</span></th>
+              <th data-sort="created_at">Inscrit le <span class="arrow">↕</span></th>
+              <th data-sort="ticket_envoye">Ticket <span class="arrow">↕</span></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://kkwaifynckroxetvrxeg.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtrd2FpZnluY2tyb3hldHZyeGVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMTc5NTcsImV4cCI6MjEwMTY5Mzk1N30.mTz12DA5BQ2R9JRP4Bg3lnNUmjkvgJiBqgURifB_1pY";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const loginWrap = document.getElementById("login-wrap");
+    const dashboard = document.getElementById("dashboard");
+    const loginForm = document.getElementById("login-form");
+    const loginError = document.getElementById("login-error");
+
+    let allRows = [];
+    let sortKey = "created_at";
+    let sortDir = "desc";
+    let showDupOnly = false;
+    let showPendingOnly = false;
+
+    async function checkSession() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) showDashboard(); else { loginWrap.hidden = false; dashboard.hidden = true; }
+    }
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginError.hidden = true;
+      const btn = document.getElementById("login-btn");
+      btn.disabled = true;
+      btn.textContent = "Connexion…";
+      try {
+        const { error } = await sb.auth.signInWithPassword({
+          email: document.getElementById("email").value.trim(),
+          password: document.getElementById("password").value
+        });
+        if (error) { loginError.textContent = "Erreur : " + error.message; loginError.hidden = false; return; }
+        showDashboard();
+      } catch (err) {
+        loginError.textContent = "Erreur réseau : " + (err && err.message ? err.message : String(err));
+        loginError.hidden = false;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Se connecter";
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await sb.auth.signOut();
+      loginWrap.hidden = false;
+      dashboard.hidden = true;
+    });
+
+    async function showDashboard() {
+      loginWrap.hidden = true;
+      dashboard.hidden = false;
+      await loadRows();
+    }
+
+    async function loadRows() {
+      const { data, error } = await sb.from("inscriptions").select("*").order("created_at", { ascending: false });
+      if (error) {
+        document.getElementById("table-body").innerHTML = `<tr><td colspan="8" class="empty-state">Erreur : ${escapeHtml(error.message)}</td></tr>`;
+        return;
+      }
+      allRows = markDuplicates(data || []);
+      renderStats();
+      renderTable();
+    }
+
+    function markDuplicates(rows) {
+      const byWhatsapp = {};
+      const byName = {};
+      rows.forEach(r => {
+        const w = (r.whatsapp || "").replace(/\s+/g, "");
+        const n = `${(r.nom||"").toLowerCase().trim()}|${(r.prenoms||"").toLowerCase().trim()}`;
+        if (w) byWhatsapp[w] = (byWhatsapp[w] || 0) + 1;
+        byName[n] = (byName[n] || 0) + 1;
+      });
+      return rows.map(r => {
+        const w = (r.whatsapp || "").replace(/\s+/g, "");
+        const n = `${(r.nom||"").toLowerCase().trim()}|${(r.prenoms||"").toLowerCase().trim()}`;
+        const isDup = (w && byWhatsapp[w] > 1) || byName[n] > 1;
+        return { ...r, _dup: isDup };
+      });
+    }
+
+    function renderStats() {
+      const total = allRows.length;
+      const sent = allRows.filter(r => r.ticket_envoye).length;
+      const dup = allRows.filter(r => r._dup).length;
+      document.getElementById("stat-total").textContent = total;
+      document.getElementById("stat-sent").textContent = sent;
+      document.getElementById("stat-pending").textContent = total - sent;
+      document.getElementById("stat-dup").textContent = dup;
+    }
+
+    function applyFiltersAndSort(rows) {
+      const q = document.getElementById("search-input").value.trim().toLowerCase();
+      let out = rows.filter(r => {
+        if (showDupOnly && !r._dup) return false;
+        if (showPendingOnly && r.ticket_envoye) return false;
+        if (!q) return true;
+        return [r.nom, r.prenoms, r.ville, r.whatsapp, r.email].some(v => (v || "").toLowerCase().includes(q));
+      });
+      out.sort((a, b) => {
+        let av = a[sortKey], bv = b[sortKey];
+        if (sortKey === "ticket_envoye") { av = av ? 1 : 0; bv = bv ? 1 : 0; }
+        if (sortKey === "created_at") { av = new Date(av).getTime(); bv = new Date(bv).getTime(); }
+        else { av = (av || "").toString().toLowerCase(); bv = (bv || "").toString().toLowerCase(); }
+        if (av < bv) return sortDir === "asc" ? -1 : 1;
+        if (av > bv) return sortDir === "asc" ? 1 : -1;
+        return 0;
+      });
+      return out;
+    }
+
+    function renderTable() {
+      const rows = applyFiltersAndSort(allRows);
+      const tbody = document.getElementById("table-body");
+
+      document.querySelectorAll("thead th[data-sort]").forEach(th => {
+        th.classList.toggle("sorted", th.dataset.sort === sortKey);
+        th.querySelector(".arrow").textContent = th.dataset.sort === sortKey ? (sortDir === "asc" ? "↑" : "↓") : "↕";
+      });
+
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Aucune inscription trouvée.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r => {
+        const date = new Date(r.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+        const ticketStatus = r.ticket_envoye
+          ? '<span class="badge-sent">✓ Envoyé</span>'
+          : '<span class="badge-pending">⏳ En attente</span>';
+        return `
+          <tr class="${r._dup ? "dup-row" : ""}">
+            <td class="td-nom">${escapeHtml(r.nom)}${r._dup ? '<span class="dup-badge">Doublon</span>' : ""}</td>
+            <td>${escapeHtml(r.prenoms)}</td>
+            <td>${escapeHtml(r.ville || "—")}</td>
+            <td>${escapeHtml(r.whatsapp || "—")}</td>
+            <td class="td-muted">${escapeHtml(r.email || "—")}</td>
+            <td class="td-muted">${date}</td>
+            <td>${ticketStatus}</td>
+            <td><button class="action-btn" data-delete-id="${r.id}">🗑️ Supprimer</button></td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    document.querySelectorAll("thead th[data-sort]").forEach(th => {
+      th.addEventListener("click", () => {
+        const key = th.dataset.sort;
+        if (sortKey === key) { sortDir = sortDir === "asc" ? "desc" : "asc"; }
+        else { sortKey = key; sortDir = "asc"; }
+        renderTable();
+      });
+    });
+
+    document.getElementById("search-input").addEventListener("input", renderTable);
+
+    document.getElementById("filter-dup").addEventListener("click", (e) => {
+      showDupOnly = !showDupOnly;
+      e.target.classList.toggle("active", showDupOnly);
+      renderTable();
+    });
+
+    document.getElementById("filter-pending").addEventListener("click", (e) => {
+      showPendingOnly = !showPendingOnly;
+      e.target.classList.toggle("active", showPendingOnly);
+      renderTable();
+    });
+
+    document.getElementById("table-body").addEventListener("click", async (e) => {
+      const id = e.target.closest("[data-delete-id]")?.dataset.deleteId;
+      if (!id) return;
+      if (!confirm("Supprimer définitivement cette inscription ?")) return;
+      const { error } = await sb.from("inscriptions").delete().eq("id", id);
+      if (error) { showToast("Erreur lors de la suppression"); return; }
+      allRows = allRows.filter((r) => r.id !== id);
+      renderStats();
+      renderTable();
+      showToast("Inscription supprimée");
+    });
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str == null ? "" : str;
+      return div.innerHTML;
+    }
+
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    checkSession();
+  </script>
+</body>
+</html>
