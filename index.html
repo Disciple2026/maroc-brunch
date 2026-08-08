@@ -369,6 +369,21 @@ body {
 }
 .step3-text { color: #6b4a4a; margin: 0; }
 
+.ticket-preview {
+  margin: 22px 0 18px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 26px rgba(110,20,20,0.18);
+}
+.ticket-preview canvas { width: 100%; height: auto; display: block; }
+
+.ticket-hint {
+  font-size: 0.78rem;
+  color: #9b8080;
+  margin: 12px 0 0;
+  text-align: center;
+}
+
 /* ---------- FOOTER ---------- */
 .site-footer {
   position: relative; overflow: hidden;
@@ -451,11 +466,11 @@ body {
     <form id="form-step2" class="reg-form" hidden>
       <div class="step2-intro">
         <p class="step2-check">✓ Inscription confirmée</p>
-        <p>Indique ton email pour recevoir ton ticket.</p>
+        <p>Dernière étape : indique ton email pour générer ton ticket.</p>
       </div>
       <div class="field"><label for="email">Email *</label><input type="email" id="email" name="email" required placeholder="toi@exemple.com"></div>
       <p class="form-error" id="form-error-2" hidden></p>
-      <button type="submit" class="btn-primary" id="submit-btn-2">Recevoir mon ticket</button>
+      <button type="submit" class="btn-primary" id="submit-btn-2">Générer mon ticket</button>
     </form>
 
     <div id="step3" class="reg-form" hidden>
@@ -463,8 +478,15 @@ body {
         <circle cx="30" cy="30" r="26"/>
         <path d="M18 31 L26 39 L42 21"/>
       </svg>
-      <p class="step3-title">Holy Brunch !</p>
-      <p class="step3-text">Vérifie ta boîte mail (et tes spams) dans quelques instants.</p>
+      <p class="step3-title">Ton ticket est prêt !</p>
+      <p class="step3-text">Télécharge-le et garde-le sur ton téléphone. Il te sera demandé à l'entrée.</p>
+
+      <div class="ticket-preview">
+        <canvas id="ticket-canvas"></canvas>
+      </div>
+
+      <button class="btn-primary" id="download-ticket">⬇️ Télécharger mon ticket</button>
+      <p class="ticket-hint">Astuce : fais aussi une capture d'écran, par sécurité.</p>
     </div>
   </section>
 
@@ -485,6 +507,7 @@ body {
   </a>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
   <script>
     const SUPABASE_URL = "https://kkwaifynckroxetvrxeg.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtrd2FpZnluY2tyb3hldHZyeGVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMTc5NTcsImV4cCI6MjEwMTY5Mzk1N30.mTz12DA5BQ2R9JRP4Bg3lnNUmjkvgJiBqgURifB_1pY";
@@ -554,14 +577,41 @@ body {
     }, { threshold: 0.15 });
     revealEls.forEach(el => io.observe(el));
 
-    /* ---------- VERSETS (défilement) ---------- */
+    /* ---------- VERSETS (défilement aléatoire) ---------- */
     const verses = [
       { text: "Ils persévéraient dans l'enseignement des apôtres, dans la communion fraternelle, dans la fraction du pain, et dans les prières.", ref: "Actes 2:42" },
       { text: "Voici, oh ! qu'il est agréable, qu'il est doux pour des frères de demeurer ensemble !", ref: "Psaume 133:1" },
       { text: "Deux valent mieux qu'un... car, s'ils tombent, l'un relève son compagnon.", ref: "Ecclésiaste 4:9-10" },
       { text: "Ils l'ont vaincu à cause du sang de l'agneau et à cause de la parole de leur témoignage.", ref: "Apocalypse 12:11" },
-      { text: "Veillons les uns sur les autres, pour nous exciter à la charité et aux bonnes œuvres, n'abandonnant pas notre assemblée.", ref: "Hébreux 10:24-25" }
+      { text: "Veillons les uns sur les autres, pour nous exciter à la charité et aux bonnes œuvres, n'abandonnant pas notre assemblée.", ref: "Hébreux 10:24-25" },
+      { text: "Là où deux ou trois sont assemblés en mon nom, je suis au milieu d'eux.", ref: "Matthieu 18:20" },
+      { text: "Comme le fer aiguise le fer, ainsi un homme excite la colère d'un homme.", ref: "Proverbes 27:17" },
+      { text: "Venez, écoutez, vous tous qui craignez Dieu, et je raconterai ce qu'il a fait à mon âme.", ref: "Psaume 66:16" },
+      { text: "Portez les fardeaux les uns des autres, et vous accomplirez ainsi la loi de Christ.", ref: "Galates 6:2" },
+      { text: "Vous serez mes témoins... jusqu'aux extrémités de la terre.", ref: "Actes 1:8" },
+      { text: "Que votre lumière luise ainsi devant les hommes, afin qu'ils voient vos bonnes œuvres.", ref: "Matthieu 5:16" },
+      { text: "Je me réjouis quand on me dit : Allons à la maison de l'Éternel !", ref: "Psaume 122:1" },
+      { text: "Consolez-vous donc les uns les autres, et édifiez-vous mutuellement.", ref: "1 Thessaloniciens 5:11" },
+      { text: "Toute la multitude de ceux qui avaient cru n'était qu'un cœur et qu'une âme.", ref: "Actes 4:32" },
+      { text: "Ayez les mêmes sentiments les uns envers les autres.", ref: "Romains 12:16" },
+      { text: "Rendez grâces en toutes choses, car c'est à votre égard la volonté de Dieu.", ref: "1 Thessaloniciens 5:18" },
+      { text: "Célébrez l'Éternel, car il est bon, car sa miséricorde dure à toujours !", ref: "Psaume 107:1" },
+      { text: "Goûtez et voyez combien l'Éternel est bon !", ref: "Psaume 34:8" },
+      { text: "Que la parole de Christ habite parmi vous abondamment... exhortez-vous réciproquement.", ref: "Colossiens 3:16" },
+      { text: "Un ami aime en tout temps, et dans le malheur il se montre un frère.", ref: "Proverbes 17:17" },
+      { text: "Ils rompaient le pain dans les maisons, et prenaient leur nourriture avec joie et simplicité de cœur.", ref: "Actes 2:46" },
+      { text: "Recevez-vous les uns les autres, comme Christ vous a reçus, pour la gloire de Dieu.", ref: "Romains 15:7" },
+      { text: "Je publierai ton nom parmi mes frères, je te célébrerai au milieu de l'assemblée.", ref: "Psaume 22:22" },
+      { text: "Le malheureux crie, et l'Éternel entend, et il le sauve de toutes ses détresses.", ref: "Psaume 34:6" },
+      { text: "Que tout ce qui respire loue l'Éternel !", ref: "Psaume 150:6" }
     ];
+
+    // Mélange aléatoire, puis défilement dans cet ordre
+    for (let i = verses.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [verses[i], verses[j]] = [verses[j], verses[i]];
+    }
+
     let verseIndex = 0;
     const verseTextEl = document.getElementById("verse-text");
     const verseRefEl = document.getElementById("verse-ref");
@@ -587,6 +637,7 @@ body {
     const formStep1 = document.getElementById("form-step1");
     const formError = document.getElementById("form-error");
     let currentInscriptionId = null;
+    let donneesInscription = {};
 
     formStep1.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -618,6 +669,7 @@ body {
         }
 
         currentInscriptionId = newId;
+        donneesInscription = payload;
         formStep1.hidden = true;
         document.getElementById("form-step2").hidden = false;
       } catch (err) {
@@ -646,18 +698,179 @@ body {
           formError2.textContent = "Erreur : " + error.message;
           formError2.hidden = false;
           btn.disabled = false;
-          btn.textContent = "Recevoir mon ticket";
+          btn.textContent = "Générer mon ticket";
           return;
         }
 
         formStep2.hidden = true;
         document.getElementById("step3").hidden = false;
+        await genererTicket();
       } catch (err) {
         formError2.textContent = "Erreur réseau : " + (err && err.message ? err.message : String(err));
         formError2.hidden = false;
         btn.disabled = false;
-        btn.textContent = "Recevoir mon ticket";
+        btn.textContent = "Générer mon ticket";
       }
+    });
+
+    /* ---------- GÉNÉRATION DU TICKET ---------- */
+    async function genererTicket() {
+      const S = 3;
+      const UW = 640, UH = 260;
+      const canvas = document.getElementById("ticket-canvas");
+      canvas.width = UW * S;
+      canvas.height = UH * S;
+      const ctx = canvas.getContext("2d");
+      const X = v => v * S, Y = v => v * S;
+
+      const RED_DEEP = "#2A0707", RED_MID = "#6E1414";
+      const WHITE = "#FFFFFF", CREAM = "#FDF7F2", GOLD = "#D4AF6E";
+
+      // Fond dégradé
+      const grad = ctx.createLinearGradient(0, 0, X(UW), Y(UH));
+      grad.addColorStop(0, RED_DEEP);
+      grad.addColorStop(1, RED_MID);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, X(UW), Y(UH));
+
+      // Lueur douce en haut à gauche
+      const glow = ctx.createRadialGradient(X(60), Y(-40), 0, X(60), Y(-40), X(320));
+      glow.addColorStop(0, "rgba(255,255,255,0.10)");
+      glow.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, X(UW), Y(UH));
+
+      // Arcs en filigrane
+      ctx.strokeStyle = "rgba(255,255,255,0.045)";
+      ctx.lineWidth = Math.max(1, S / 2);
+      for (let i = 0; i < 14; i++) {
+        const off = i * 18;
+        ctx.beginPath();
+        ctx.ellipse(X(30 + off), Y(120), X(170), Y(180), 0, Math.PI * 1.11, Math.PI * 1.89);
+        ctx.stroke();
+      }
+
+      const stub = UW - 190;
+
+      // Perforation
+      ctx.fillStyle = "rgba(253,247,242,0.42)";
+      for (let yy = 16; yy < UH - 16; yy += 11) {
+        ctx.beginPath();
+        ctx.arc(X(stub), Y(yy), S, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Encoches
+      ctx.fillStyle = CREAM;
+      ctx.beginPath(); ctx.arc(X(stub), 0, 9 * S, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(X(stub), Y(UH), 9 * S, 0, Math.PI * 2); ctx.fill();
+
+      // Cadres
+      ctx.strokeStyle = "rgba(212,175,110,0.7)";
+      ctx.lineWidth = Math.max(1, S);
+      ctx.strokeRect(X(9), Y(9), X(UW - 18), Y(UH - 18));
+      ctx.strokeStyle = "rgba(255,255,255,0.22)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(X(13), Y(13), X(UW - 26), Y(UH - 26));
+
+      // Flamme
+      ctx.fillStyle = GOLD;
+      ctx.beginPath();
+      const fx = X(34), fy = Y(26), sc = 0.75 * S;
+      ctx.moveTo(fx + 15 * sc, fy);
+      ctx.lineTo(fx + 9 * sc, fy + 8 * sc);
+      ctx.lineTo(fx + 6 * sc, fy + 13 * sc);
+      ctx.lineTo(fx + 6 * sc, fy + 21 * sc);
+      ctx.lineTo(fx + 10 * sc, fy + 29 * sc);
+      ctx.lineTo(fx + 15 * sc, fy + 30 * sc);
+      ctx.lineTo(fx + 20 * sc, fy + 29 * sc);
+      ctx.lineTo(fx + 24 * sc, fy + 21 * sc);
+      ctx.lineTo(fx + 24 * sc, fy + 14 * sc);
+      ctx.lineTo(fx + 19 * sc, fy + 13 * sc);
+      ctx.lineTo(fx + 19 * sc, fy + 8 * sc);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.textBaseline = "top";
+      const T = (x, y, txt, font, color, align = "left") => {
+        ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align;
+        ctx.fillText(txt, X(x), Y(y));
+      };
+
+      T(56, 26, "REFUGE POUR LA RESTAURATION", `bold ${11.5 * S}px 'Work Sans', sans-serif`, WHITE);
+      T(56, 43, "Brunch Spécial Maroc  ·  Ticket officiel", `italic ${10 * S}px Georgia, serif`, "rgba(253,247,242,0.8)");
+
+      ctx.strokeStyle = "rgba(212,175,110,0.5)"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(X(34), Y(62)); ctx.lineTo(X(stub - 26), Y(62)); ctx.stroke();
+
+      T(34, 78, "PARTICIPANT", `bold ${7 * S}px 'Work Sans', sans-serif`, "rgba(212,175,110,0.9)");
+
+      const nomComplet = `${donneesInscription.prenoms} ${donneesInscription.nom}`;
+      let tailleNom = 27;
+      ctx.font = `bold ${tailleNom * S}px Georgia, serif`;
+      while (ctx.measureText(nomComplet).width > X(stub - 60) && tailleNom > 14) {
+        tailleNom -= 1;
+        ctx.font = `bold ${tailleNom * S}px Georgia, serif`;
+      }
+      T(34, 90, nomComplet, `bold ${tailleNom * S}px Georgia, serif`, WHITE);
+
+      ctx.strokeStyle = "rgba(255,255,255,0.18)";
+      ctx.beginPath(); ctx.moveTo(X(34), Y(128)); ctx.lineTo(X(stub - 26), Y(128)); ctx.stroke();
+
+      const labelFont = `bold ${7 * S}px 'Work Sans', sans-serif`;
+      const valFont = `${10.5 * S}px 'Work Sans', sans-serif`;
+      const gold9 = "rgba(212,175,110,0.9)";
+
+      T(34, 142, "DATE", labelFont, gold9);
+      T(34, 155, "Samedi 19 Septembre", valFont, WHITE);
+      T(190, 142, "HEURE", labelFont, gold9);
+      T(190, 155, "10h00", valFont, WHITE);
+      T(300, 142, "VILLE", labelFont, gold9);
+      T(300, 155, "Tanger", valFont, WHITE);
+      T(34, 180, "LIEU", labelFont, gold9);
+      T(34, 193, "Villa Haris", valFont, WHITE);
+
+      T(34, 222, "« Une famille, une foi, un feu ! »", `italic ${10.5 * S}px Georgia, serif`, "rgba(212,175,110,0.92)");
+      T(34, 240, "N° " + currentInscriptionId.slice(0, 8).toUpperCase(), `${7.5 * S}px 'Work Sans', sans-serif`, "rgba(253,247,242,0.5)");
+
+      // Talon assombri
+      ctx.fillStyle = "rgba(0,0,0,0.24)";
+      ctx.fillRect(X(stub), 0, X(UW - stub), Y(UH));
+
+      // QR code
+      const qs = 118;
+      const qx = stub + (UW - stub - qs) / 2;
+      ctx.fillStyle = WHITE;
+      ctx.fillRect(X(qx - 9), Y(52), X(qs + 18), Y(qs + 18));
+      ctx.strokeStyle = GOLD; ctx.lineWidth = Math.max(1, S);
+      ctx.strokeRect(X(qx - 9), Y(52), X(qs + 18), Y(qs + 18));
+
+      try {
+        const qrCanvas = document.createElement("canvas");
+        await QRCode.toCanvas(qrCanvas, currentInscriptionId, {
+          margin: 0, width: X(qs),
+          color: { dark: "#2A0707", light: "#FFFFFF" }
+        });
+        ctx.drawImage(qrCanvas, X(qx), Y(61), X(qs), Y(qs));
+      } catch (e) {
+        ctx.fillStyle = RED_DEEP;
+        ctx.font = `${8 * S}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText("QR indisponible", X(qx + qs / 2), Y(52 + qs / 2));
+      }
+
+      const cx = stub + (UW - stub) / 2;
+      T(cx, 196, "SCANNE À L'ENTRÉE", `bold ${7.5 * S}px 'Work Sans', sans-serif`, WHITE, "center");
+      T(cx, 210, "Ce ticket est nominatif", `italic ${8 * S}px Georgia, serif`, "rgba(253,247,242,0.7)", "center");
+      T(cx, 234, "HOLY BRUNCH", `bold ${6.5 * S}px 'Work Sans', sans-serif`, "rgba(212,175,110,0.85)", "center");
+    }
+
+    document.getElementById("download-ticket").addEventListener("click", () => {
+      const canvas = document.getElementById("ticket-canvas");
+      const lien = document.createElement("a");
+      lien.download = `ticket-${donneesInscription.prenoms}-${donneesInscription.nom}.png`;
+      lien.href = canvas.toDataURL("image/png");
+      lien.click();
     });
   </script>
 </body>
