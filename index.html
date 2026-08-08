@@ -507,7 +507,6 @@ body {
   </a>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
   <script>
     const SUPABASE_URL = "https://kkwaifynckroxetvrxeg.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtrd2FpZnluY2tyb3hldHZyeGVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMTc5NTcsImV4cCI6MjEwMTY5Mzk1N30.mTz12DA5BQ2R9JRP4Bg3lnNUmjkvgJiBqgURifB_1pY";
@@ -713,6 +712,36 @@ body {
       }
     });
 
+    /* ---------- CHARGEMENT DE LA LIBRAIRIE QR (avec secours) ---------- */
+    const SOURCES_QR = [
+      "https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js",
+      "https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"
+    ];
+
+    let promesseQR = null;
+    function chargerLibQR() {
+      if (typeof QRCode !== "undefined") return Promise.resolve();
+      if (promesseQR) return promesseQR;
+
+      promesseQR = new Promise((resolve, reject) => {
+        let i = 0;
+        const essayer = () => {
+          if (i >= SOURCES_QR.length) { reject(new Error("QR indisponible")); return; }
+          const s = document.createElement("script");
+          s.src = SOURCES_QR[i++];
+          s.onload = () => (typeof QRCode !== "undefined") ? resolve() : essayer();
+          s.onerror = essayer;
+          document.head.appendChild(s);
+        };
+        essayer();
+      });
+      return promesseQR;
+    }
+
+    // On précharge dès l'ouverture de la page pour que ce soit prêt le moment venu
+    chargerLibQR().catch(() => {});
+
     /* ---------- GÉNÉRATION DU TICKET ---------- */
     async function genererTicket() {
       const S = 3;
@@ -845,18 +874,27 @@ body {
       ctx.strokeStyle = GOLD; ctx.lineWidth = Math.max(1, S);
       ctx.strokeRect(X(qx - 9), Y(52), X(qs + 18), Y(qs + 18));
 
+      // QR code — chargement robuste de la librairie puis rendu
       try {
-        const qrCanvas = document.createElement("canvas");
-        await QRCode.toCanvas(qrCanvas, currentInscriptionId, {
-          margin: 0, width: X(qs),
+        await chargerLibQR();
+        const dataUrl = await QRCode.toDataURL(currentInscriptionId, {
+          margin: 0,
+          width: 600,
+          errorCorrectionLevel: "M",
           color: { dark: "#2A0707", light: "#FFFFFF" }
         });
-        ctx.drawImage(qrCanvas, X(qx), Y(61), X(qs), Y(qs));
+        const imgQR = await new Promise((resolve, reject) => {
+          const im = new Image();
+          im.onload = () => resolve(im);
+          im.onerror = reject;
+          im.src = dataUrl;
+        });
+        ctx.drawImage(imgQR, X(qx), Y(61), X(qs), Y(qs));
       } catch (e) {
         ctx.fillStyle = RED_DEEP;
         ctx.font = `${8 * S}px sans-serif`;
         ctx.textAlign = "center";
-        ctx.fillText("QR indisponible", X(qx + qs / 2), Y(52 + qs / 2));
+        ctx.fillText("Code n° " + currentInscriptionId.slice(0, 8).toUpperCase(), X(qx + qs / 2), Y(52 + qs / 2));
       }
 
       const cx = stub + (UW - stub) / 2;
